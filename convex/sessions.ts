@@ -1,7 +1,6 @@
-import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { mutation } from "./_generated/server";
 
-export const getOrCreateSession = query({
+export const getOrCreateSession = mutation({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     

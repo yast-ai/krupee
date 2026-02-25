@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 export default function ImageGenerator() {
@@ -10,7 +10,7 @@ export default function ImageGenerator() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const generateImage = useMutation(api.ai.generateImage);
+  const generateImage = useAction(api.ai.generateImage);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

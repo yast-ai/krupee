@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalAction, internalMutation, action } from "./_generated/server";
-import { generateText, generateImage as aiGenerateImage } from "ai";
+import { internal } from "./_generated/api";
+import { generateText, experimental_generateImage as aiGenerateImage } from "ai";
 import { openai } from "@ai-sdk/openai";
 
 const TICKER_SYSTEM_PROMPT = `You are Krupee, a financial assistant specializing in stock ticker information.
@@ -67,6 +68,22 @@ export const saveResponse = internalMutation({
   },
 });
 
+export const saveGeneratedImage = internalMutation({
+  args: {
+    prompt: v.string(),
+    url: v.optional(v.string()),
+    error: v.optional(v.string()),
+  },
+  handler: async (ctx, { prompt, url, error }) => {
+    await ctx.db.insert("generatedImages", {
+      prompt,
+      url,
+      error,
+      createdAt: Date.now(),
+    });
+  },
+});
+
 export const generateImage = action({
   args: {
     prompt: v.string(),
@@ -79,20 +96,18 @@ export const generateImage = action({
         size: "1024x1024",
       });
 
-      await ctx.db.insert("generatedImages", {
+      await ctx.runMutation(internal.ai.saveGeneratedImage, {
         prompt,
         url: image.base64,
-        createdAt: Date.now(),
       });
 
       return { url: image.base64 };
     } catch (error) {
       console.error("Image generation error:", error);
       
-      await ctx.db.insert("generatedImages", {
+      await ctx.runMutation(internal.ai.saveGeneratedImage, {
         prompt,
         error: error instanceof Error ? error.message : "Unknown error",
-        createdAt: Date.now(),
       });
 
       throw new Error("Failed to generate image. Please check your API key.");
