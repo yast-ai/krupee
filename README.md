@@ -1,2 +1,27 @@
-# krupee
-Next.js 16 + Convex + AI SDK 6 chatbot with ticker information
+# Krupee
+
+A Next.js 16 App Router full-stack application with Convex backend and AI SDK integration.
+
+## Features
+
+- AI Chatbot for stock ticker information
+- AI Image Generation
+- Next.js 16 with App Router
+- Convex real-time backend
+- No authentication required
+
+## Setup
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Copy `.env.local.example` to `.env.local` and add your OpenAI API key
+4. Run `npx convex dev` to set up Convex
+5. Run `npm run dev` to start the development server
+
+## Usage
+
+The chatbot is specifically tuned to provide information about stock tickers. Ask about any company or ticker symbol like AAPL, TSLA, GOOGL, etc.
+
+## System Prompt
+
+The chatbot uses a specialized system prompt focused on ticker information, helping users understand companies, sectors, and market context.
