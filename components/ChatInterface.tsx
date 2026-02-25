@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import ImageGenerator from "./ImageGenerator";
@@ -11,9 +12,10 @@ export type Tab = "chat" | "image";
 
 export default function ChatInterface() {
   const [activeTab, setActiveTab] = useState<Tab>("chat");
+  const [sessionId, setSessionId] = useState<Id<"sessions"> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  const sessionId = useQuery(api.sessions.getOrCreateSession);
+  const getOrCreateSession = useMutation(api.sessions.getOrCreateSession);
   const messages = useQuery(
     api.messages.listMessages,
     sessionId ? { sessionId } : "skip"
@@ -27,6 +29,25 @@ export default function ChatInterface() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const initializeSession = async () => {
+      const id = await getOrCreateSession({});
+      if (isMounted) {
+        setSessionId(id);
+      }
+    };
+
+    initializeSession().catch((error) => {
+      console.error("Failed to initialize chat session:", error);
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [getOrCreateSession]);
 
   const handleSendMessage = async (content: string) => {
     if (!sessionId || !content.trim()) return;

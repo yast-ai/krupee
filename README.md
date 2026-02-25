@@ -14,9 +14,11 @@ A Next.js 16 App Router full-stack application with Convex backend and AI SDK in
 
 1. Clone the repository
 2. Install dependencies: `npm install`
-3. Copy `.env.local.example` to `.env.local` and add your OpenAI API key
-4. Run `npx convex dev` to set up Convex
+3. Copy `.env.local.example` to `.env.local` and add your API key(s)
+4. Run `npm run convex` to set up and start Convex locally
 5. Run `npm run dev` to start the development server
+
+`npm run dev`, `npm run build`, and `npm run lint` all run Convex code generation first to ensure `convex/_generated` types are available.
 
 ## Usage
 
